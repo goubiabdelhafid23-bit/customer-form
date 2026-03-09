@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>استمارة معلومات الزبون</title>
+  <style>
+    :root {
+      --primary: #0f4c81;
+      --primary-dark: #0b3b63;
+      --bg: #eef3f8;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d9e2ec;
+      --success-bg: #eaf8ef;
+      --success-text: #166534;
+      --error-bg: #fdecec;
+      --error-text: #b42318;
+      --shadow: 0 15px 40px rgba(15, 76, 129, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, rgba(15,76,129,0.08), rgba(42,127,98,0.05)), var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(15, 76, 129, 0.08);
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.4;
+    }
+
+    .header p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.9;
+      opacity: 0.97;
+    }
+
+    .content {
+      padding: 26px 24px 28px;
+    }
+
+    .info-box {
+      background: #f8fbfe;
+      border: 1px solid #d8e8f7;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 22px;
+      line-height: 1.9;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #243b53;
+    }
+
+    .required {
+      color: #c62828;
+      margin-right: 4px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(15, 76, 129, 0.10);
+    }
+
+    .section-title {
+      margin: 8px 0 14px;
+      font-size: 16px;
+      color: var(--primary);
+      font-weight: bold;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #cfd8e3;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 15px 16px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.75;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      margin-top: 18px;
+      border-radius: 14px;
+      padding: 14px 16px;
+      line-height: 1.8;
+      font-size: 14px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .message.success {
+      display: block;
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid #b7ebc6;
+    }
+
+    .message.error {
+      display: block;
+      background: var(--error-bg);
+      color: var(--error-text);
+      border: 1px solid #f4b4b4;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.9;
+      text-align: center;
+    }
+
+    .mini-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.7;
+    }
+
+    .trap-field {
+      position: absolute;
+      left: -9999px;
+      opacity: 0;
+      height: 0;
+      width: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 640px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .content {
+        padding: 20px 16px 22px;
+      }
+
+      .header {
+        padding: 24px 16px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="header">
+        <h1>استمارة معلومات الزبون</h1>
+        <p>
+          يرجى ملء المعلومات بدقة كما هي موجودة في الوثائق الرسمية.<br>
+          رقم المرجع يجب أن يتكون من 15 رقمًا ويبدأ بـ 23106.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="info-box">
+          في حالة كون صاحب المرجع <strong>متوفى</strong>، يكفي إدخال
+          <strong>الاسم واللقب ورقم المرجع</strong> فقط.<br>
+          وإذا كان رقم المرجع مسجلًا مسبقًا، ستظهر رسالة تفيد بذلك.
+        </div>
+
+        <form id="customerForm" novalidate>
+          <input
+            type="text"
+            id="website"
+            name="website"
+            class="trap-field"
+            tabindex="-1"
+            autocomplete="off"
+          />
+
+          <div class="section-title">البيانات الأساسية</div>
+
+          <div class="grid">
+            <div class="field">
+              <label for="firstName"><span class="required">*</span>الاسم</label>
+              <input type="text" id="firstName" name="firstName" placeholder="أدخل الاسم" required />
+            </div>
+
+            <div class="field">
+              <label for="lastName"><span class="required">*</span>اللقب</label>
+              <input type="text" id="lastName" name="lastName" placeholder="أدخل اللقب" required />
+            </div>
+
+            <div class="field full">
+              <label for="referenceNumber"><span class="required">*</span>رقم المرجع</label>
+              <input
+                type="text"
+                id="referenceNumber"
+                name="referenceNumber"
+                maxlength="15"
+                inputmode="numeric"
+                placeholder="مثال: 231061234567890"
+                required
+              />
+              <div class="mini-note">يجب أن يبدأ بـ 23106 ويتكون من 15 رقمًا.</div>
+            </div>
+
+            <div class="field full">
+              <label for="status"><span class="required">*</span>حالة صاحب المرجع</label>
+              <select id="status" name="status" required>
+                <option value="">اختر الحالة</option>
+                <option value="حي">حي</option>
+                <option value="متوفى">متوفى</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="aliveSection">
+            <div class="section-title">معلومات إضافية</div>
+
+            <div class="grid">
+              <div class="field full">
+                <label for="nationalId"><span class="required">*</span>رقم التعريف الوطني</label>
+                <input
+                  type="text"
+                  id="nationalId"
+                  name="nationalId"
+                  maxlength="18"
+                  inputmode="numeric"
+                  placeholder="أدخل 18 رقمًا"
+                />
+                <div class="mini-note">يجب أن يتكون من 18 رقمًا.</div>
+              </div>
+
+              <div class="field full">
+                <label for="phone"><span class="required">*</span>رقم الهاتف</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  maxlength="10"
+                  inputmode="numeric"
+                  placeholder="05xxxxxxxx"
+                />
+                <div class="mini-note">يجب أن يبدأ بـ 05 أو 06 أو 07.</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="submit-btn" type="submit" id="submitBtn">إرسال المعلومات</button>
+          <div id="messageBox" class="message"></div>
+
+          <div class="footer-note">
+            هذا النموذج مخصص لجمع معلومات الزبائن وإرسالها مباشرة إلى قاعدة البيانات الخاصة بالمصلحة.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJabntacINFpI2HvQlJZkUwoSW3pow2EWlRwOewRiPMDPlYKTtyMX943Wlr6JXGJ5Y/exec";
+
+    const form = document.getElementById("customerForm");
+    const statusSelect = document.getElementById("status");
+    const aliveSection = document.getElementById("aliveSection");
+    const nationalIdInput = document.getElementById("nationalId");
+    const phoneInput = document.getElementById("phone");
+    const referenceInput = document.getElementById("referenceNumber");
+    const websiteInput = document.getElementById("website");
+    const submitBtn = document.getElementById("submitBtn");
+    const messageBox = document.getElementById("messageBox");
+
+    let isSubmitting = false;
+
+    function onlyDigits(value) {
+      return value.replace(/\D/g, "");
+    }
+
+    function showMessage(type, text) {
+      messageBox.className = "message " + type;
+      messageBox.textContent = text;
+      messageBox.style.display = "block";
+    }
+
+    function clearMessage() {
+      messageBox.className = "message";
+      messageBox.textContent = "";
+      messageBox.style.display = "none";
+    }
+
+    function toggleAliveSection() {
+      const status = statusSelect.value;
+
+      if (status === "متوفى") {
+        aliveSection.classList.add("hidden");
+        nationalIdInput.required = false;
+        phoneInput.required = false;
+        nationalIdInput.value = "";
+        phoneInput.value = "";
+      } else if (status === "حي") {
+        aliveSection.classList.remove("hidden");
+        nationalIdInput.required = true;
+        phoneInput.required = true;
+      } else {
+        aliveSection.classList.remove("hidden");
+        nationalIdInput.required = false;
+        phoneInput.required = false;
+      }
+    }
+
+    statusSelect.addEventListener("change", toggleAliveSection);
+
+    referenceInput.addEventListener("input", function () {
+      this.value = onlyDigits(this.value).slice(0, 15);
+    });
+
+    nationalIdInput.addEventListener("input", function () {
+      this.value = onlyDigits(this.value).slice(0, 18);
+    });
+
+    phoneInput.addEventListener("input", function () {
+      this.value = onlyDigits(this.value).slice(0, 10);
+    });
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      if (isSubmitting) return;
+
+      clearMessage();
+
+      const firstName = document.getElementById("firstName").value.trim();
+      const lastName = document.getElementById("lastName").value.trim();
+      const referenceNumber = referenceInput.value.trim();
+      const status = statusSelect.value;
+      const nationalId = nationalIdInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const website = websiteInput.value.trim();
+
+      const referenceRegex = /^23106\d{10}$/;
+      const nationalIdRegex = /^\d{18}$/;
+      const phoneRegex = /^(05|06|07)\d{8}$/;
+
+      if (website !== "") {
+        showMessage("error", "تم رفض الطلب.");
+        return;
+      }
+
+      if (!firstName || !lastName || !referenceNumber || !status) {
+        showMessage("error", "يرجى ملء جميع الحقول الإجبارية.");
+        return;
+      }
+
+      if (!referenceRegex.test(referenceNumber)) {
+        showMessage("error", "رقم المرجع غير صحيح. يجب أن يتكون من 15 رقمًا ويبدأ بـ 23106.");
+        return;
+      }
+
+      if (status === "حي") {
+        if (!nationalIdRegex.test(nationalId)) {
+          showMessage("error", "رقم التعريف الوطني غير صحيح. يجب أن يتكون من 18 رقمًا.");
+          return;
+        }
+
+        if (!phoneRegex.test(phone)) {
+          showMessage("error", "رقم الهاتف غير صحيح. يجب أن يبدأ بـ 05 أو 06 أو 07.");
+          return;
+        }
+      }
+
+      isSubmitting = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "جارٍ إرسال المعلومات...";
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            referenceNumber,
+            status,
+            nationalId,
+            phone,
+            website
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showMessage("success", result.message || "تم تسجيل المعلومات بنجاح.");
+          form.reset();
+          toggleAliveSection();
+        } else {
+          showMessage("error", result.message || "تعذر تسجيل المعلومات.");
+        }
+      } catch (error) {
+        showMessage("error", "تعذر الاتصال بالخادم. تحقق من الرابط أو إعدادات السكربت.");
+      } finally {
+        isSubmitting = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = "إرسال المعلومات";
+      }
+    });
+
+    toggleAliveSection();
+  </script>
+</body>
+</html>n
